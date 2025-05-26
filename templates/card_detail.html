@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ card.name }} - MTG Efficiency Variable Database</title>
+    <style>
+        /* Same mystical styling as gallery */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, 
+                #1a1a2e 0%, 
+                #16213e 25%, 
+                #0f3460 50%, 
+                #16213e 75%, 
+                #1a1a2e 100%);
+            background-attachment: fixed;
+            color: #e8e8f0;
+            min-height: 100vh;
+        }
+        
+        /* Subtle arcane pattern overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.01) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Back button styling */
+        .back-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3d3d5c, #2d2d44);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: linear-gradient(135deg, #4d4d6c, #3d3d54);
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 15px rgba(120, 119, 198, 0.2);
+            color: #e8e8f0;
+            text-decoration: none;
+        }
+        
+        /* Card layout */
+        .card-layout {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card-image {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 
+                        0 0 20px rgba(120, 119, 198, 0.1);
+        }
+        
+        /* Card name styling */
+        .card-name {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .card-name h1 {
+            font-size: 32px;
+            text-shadow: 0 0 25px rgba(120, 119, 198, 0.8);
+            margin: 0;
+            color: #f0f0f8;
+            font-weight: bold;
+        }
+        
+        /* Face name styling for multi-faced cards */
+        .face-name {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .face-name h2 {
+            font-size: 24px;
+            text-shadow: 0 0 15px rgba(120, 119, 198, 0.6);
+            margin: 0;
+            color: #f0f0f8;
+            font-weight: bold;
+        }
+        
+        /* Detail boxes */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-box {
+            background: rgba(45, 45, 68, 0.4);
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .detail-box strong {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .detail-box .value {
+            font-size: 16px;
+        }
+        
+        /* Rules text styling */
+        .rules-text {
+            margin-top: 20px;
+        }
+        
+        .rules-text h3 {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f0f0f8;
+        }
+        
+        .rules-text-content {
+            background: rgba(45, 45, 68, 0.3);
+            border: 1px solid rgba(120, 119, 198, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: center;
+        }
+        
+        /* Market & Set Info */
+        .market-info {
+            margin-top: 30px;
+        }
+        
+        .market-info h3 {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #f0f0f8;
+        }
+        
+        /* Face separator */
+        .face-separator {
+            margin: 40px 0;
+            border-bottom: 2px solid rgba(120, 119, 198, 0.3);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .card-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-name h1 {
+                font-size: 24px;
+            }
+            
+            .face-name h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back button -->
+        <a href="/" class="back-button">← Back to Gallery</a>
+        
+        {% if card.faces %}
+            <!-- Multi-faced card -->
+            <div class="card-name">
+                <h1>{{ card.name }}</h1>
+            </div>
+            
+            {% for face in card.faces %}
+                {% set face_names = card.name.split(' // ') %}
+                {% set face_name = face_names[loop.index0] if loop.index0 < face_names|length else face.name or 'Face ' + loop.index|string %}
+                
+                <div class="face-name">
+                    <h2>{{ face_name }}</h2>
+                </div>
+                
+                <div class="card-layout">
+                    <div>
+                        {% if face.image_url %}
+                            <img src="{{ face.image_url }}" alt="{{ face_name }}" class="card-image">
+                        {% else %}
+                            <div style="padding: 20px; text-align: center; background: rgba(45, 45, 68, 0.3); border-radius: 12px;">
+                                No image available
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <div class="details-grid">
+                            {% if face.mana_cost %}
+                            <div class="detail-box">
+                                <strong>Mana Cost:</strong>
+                                <div class="value">{{ face.mana_cost }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if face.cmc %}
+                            <div class="detail-box">
+                                <strong>Converted Mana Cost:</strong>
+                                <div class="value">{{ face.cmc }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if face.type_line %}
+                            <div class="detail-box">
+                                <strong>Type:</strong>
+                                <div class="value">{{ face.type_line }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if face.power %}
+                            <div class="detail-box">
+                                <strong>Power:</strong>
+                                <div class="value">{{ face.power }}</div>
+                            </div>
+                            {% endif %}
+
+                            {% if face.toughness %}
+                            <div class="detail-box">
+                                <strong>Toughness:</strong>
+                                <div class="value">{{ face.toughness }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if face.oracle_text %}
+                        <div class="rules-text">
+                            <h3>Rules Text:</h3>
+                            <div class="rules-text-content">
+                                {{ face.oracle_text }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if not loop.last %}
+                <div class="face-separator"></div>
+                {% endif %}
+            {% endfor %}
+            
+        {% else %}
+            <!-- Single-faced card -->
+            <div class="card-layout">
+                <div>
+                    {% if card.image_url %}
+                        <img src="{{ card.image_url }}" alt="{{ card.name }}" class="card-image">
+                    {% else %}
+                        <div style="padding: 20px; text-align: center; background: rgba(45, 45, 68, 0.3); border-radius: 12px;">
+                            No image available
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <div class="card-name">
+                        <h1>{{ card.name }}</h1>
+                    </div>
+                    
+                    <div class="details-grid">
+                        {% if card.mana_cost %}
+                        <div class="detail-box">
+                            <strong>Mana Cost:</strong>
+                            <div class="value">{{ card.mana_cost }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.cmc %}
+                        <div class="detail-box">
+                            <strong>Converted Mana Cost:</strong>
+                            <div class="value">{{ card.cmc }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.type_line %}
+                        <div class="detail-box">
+                            <strong>Type:</strong>
+                            <div class="value">{{ card.type_line }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.power %}
+                        <div class="detail-box">
+                            <strong>Power:</strong>
+                            <div class="value">{{ card.power }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if card.toughness %}
+                        <div class="detail-box">
+                            <strong>Toughness:</strong>
+                            <div class="value">{{ card.toughness }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.edhrec_rank %}
+                        <div class="detail-box">
+                            <strong>EDHREC Rank:</strong>
+                            <div class="value">{{ card.edhrec_rank }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.usd_price %}
+                        <div class="detail-box">
+                            <strong>Price:</strong>
+                            <div class="value">${{ card.usd_price }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.set_name %}
+                        <div class="detail-box">
+                            <strong>Set:</strong>
+                            <div class="value">{{ card.set_name }}</div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if card.rarity %}
+                        <div class="detail-box">
+                            <strong>Rarity:</strong>
+                            <div class="value">{{ card.rarity }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if card.oracle_text %}
+                    <div class="rules-text">
+                        <h3>Rules Text:</h3>
+                        <div class="rules-text-content">
+                            {{ card.oracle_text }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

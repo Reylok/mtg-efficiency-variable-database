@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        /* Your mystical styling ported from Streamlit */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, 
+                #1a1a2e 0%, 
+                #16213e 25%, 
+                #0f3460 50%, 
+                #16213e 75%, 
+                #1a1a2e 100%);
+            background-attachment: fixed;
+            color: #e8e8f0;
+            min-height: 100vh;
+        }
+        
+        /* Subtle arcane pattern overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.01) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, #2d2d44 0%, #232339 100%);
+            border: 1px solid rgba(120, 119, 198, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 5px;
+        }
+        
+        .content {
+            flex: 1;
+        }
+        
+        /* Title styling */
+        .title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .title h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 25px rgba(120, 119, 198, 0.8);
+            margin: 0;
+            color: #f0f0f8;
+            font-weight: bold;
+        }
+        
+        /* Form styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f0f0f8;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #2d2d44, #232339);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            border-color: rgba(120, 119, 198, 0.6);
+            box-shadow: 0 0 10px rgba(120, 119, 198, 0.2);
+            outline: none;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #2d2d44, #232339);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(232,232,240,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 32px;
+        }
+
+        .form-select:hover {
+            border-color: rgba(120, 119, 198, 0.6);
+            box-shadow: 0 0 10px rgba(120, 119, 198, 0.2);
+        }
+
+        .form-select option {
+            background-color: #2d2d44 !important;
+            color: #e8e8f0 !important;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        
+        .filter-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #3d3d5c, #2d2d44);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #4d4d6c, #3d3d54);
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 15px rgba(120, 119, 198, 0.2);
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Toggle button styling */
+        .toggle-switch {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 4px;
+            background: linear-gradient(135deg, #3d3d5c, #2d2d44);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            gap: 2px;
+            min-height: 40px;
+        }
+
+        .toggle-switch:hover {
+            background: linear-gradient(135deg, #4d4d6c, #3d3d54);
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 15px rgba(120, 119, 198, 0.2);
+        }
+
+        .toggle-option {
+            padding: 10px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex: 1 1 50%;
+            text-align: center;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .toggle-option.active {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #f0f0f8;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .type-toggle-hidden {
+            display: none !important;
+        }
+        
+        /* Card grid styling */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .card-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 
+                        0 0 20px rgba(120, 119, 198, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-item:hover .card-image {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 
+                        0 0 30px rgba(120, 119, 198, 0.2);
+        }
+        
+        .card-button {
+            width: 100%;
+            margin-top: 5px;
+            padding: 8px;
+            background: linear-gradient(135deg, #3d3d5c, #2d2d44);
+            color: #e8e8f0;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .card-button:hover {
+            background: linear-gradient(135deg, #4d4d6c, #3d3d54);
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 15px rgba(120, 119, 198, 0.2);
+        }
+        
+        /* Pagination styling */
+        .pagination {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+            align-items: center;
+        }
+        
+        .pagination-info {
+            text-align: center;
+            padding-top: 8px;
+            font-size: 14px;
+        }
+        
+        .pagination .btn {
+            width: 100%;
+        }
+        
+        /* Results count */
+        .results-count {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #e8e8f0;
+        }
+        
+        /* Subheadings */
+        .subheading {
+            color: #f0f0f8;
+            text-shadow: 0 0 10px rgba(120, 119, 198, 0.3);
+            margin: 20px 0 10px 0;
+            font-size: 18px;
+        }
+        
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #e8e8f0;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .card-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .pagination {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        /* Autocomplete dropdown styling */
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2d2d44, #232339);
+            border: 1px solid rgba(120, 119, 198, 0.4);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .autocomplete-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(120, 119, 198, 0.2);
+            transition: background-color 0.2s ease;
+            color: #f0f0f8;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.highlighted {
+            background: rgba(120, 119, 198, 0.2);
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>MTG Efficiency Variable Database</h1>
+        </div>
+        
+        <div class="main-content">
+            <!-- Sidebar with filters -->
+            <div class="sidebar">
+                <form id="search-form">
+                    <!-- Name search -->
+                    <div class="form-group">
+                        <label class="form-label">Search Card Name</label>
+                        <input type="text" id="name-search" class="form-input" placeholder="e.g. Lightning Bolt">
+                    </div>
+                    
+                    <!-- Type search -->
+                    <div class="form-group">
+                        <label class="form-label">Search Card Types</label>
+                        <input type="text" id="type-search" class="form-input" placeholder="e.g. Goblin, Equipment, Legendary">
+                    </div>
+                    
+                    <!-- Oracle text search -->
+                    <div class="form-group">
+                        <label class="form-label">Search Oracle Text</label>
+                        <input type="text" id="oracle-search" class="form-input" placeholder="e.g. flying, draw.*card, tap.*untap">
+                    </div>
+                    
+                    <!-- Search options -->
+                    <div class="form-group">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="regex-mode">
+                                <label for="regex-mode">Regex mode</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="word-order">
+                                <label for="word-order">Word order matters</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Color Identity -->
+                    <h3 class="subheading">Color Filtering</h3>
+                    
+                    <button type="button" id="color-mode-toggle" class="toggle-switch">
+                        <span class="toggle-option active">Identity</span>
+                        <span class="toggle-option">Exact</span>
+                    </button>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="white" value="W">
+                            <label for="white">⚪</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="blue" value="U">
+                            <label for="blue">🔵</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="black" value="B">
+                            <label for="black">⚫</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="red" value="R">
+                            <label for="red">🔴</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="green" value="G">
+                            <label for="green">🟢</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="colorless">
+                            <label for="colorless">◯</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Color mode explanation -->
+                    <div style="font-size: 12px; color: #b8b8c8; margin-top: 5px; text-align: center;" id="color-mode-description">
+                        Color Identity: Cards can be played in decks with these colors
+                    </div>
+                    
+                    <!-- Mana Value -->
+                    <h3 class="subheading">Mana Value</h3>
+                    <div id="cmc-filters">
+                        <div class="filter-pair">
+                            <select class="form-select cmc-operator">
+                                <option value="any">any</option>
+                                <option value="equals">equals</option>
+                                <option value="less than">less than</option>
+                                <option value="less than or equal">less than or equal</option>
+                                <option value="greater than">greater than</option>
+                                <option value="greater than or equal">greater than or equal</option>
+                            </select>
+                            <input type="number" class="form-input cmc-value" min="0" max="20" value="2" disabled>
+                        </div>
+                    </div>
+                    <button type="button" id="add-cmc-filter" class="btn btn-small" style="margin: 5px 0;">+ Add CMC Filter</button>
+                    <button type="button" id="clear-cmc-filters" class="btn btn-small">Clear CMC Filters</button>
+                    
+                    <!-- Card Types -->
+                    <h3 class="subheading">Card Types</h3>
+
+                    <button type="button" id="type-mode-toggle" class="toggle-switch type-toggle-hidden">
+                        <span class="toggle-option active">Exact</span>
+                        <span class="toggle-option">Partial</span>
+                    </button>
+
+                    <div id="type-filters">
+                        <div class="filter-pair">
+                            <select class="form-select type-operator">
+                                <option value="any">any</option>
+                                <option value="is">is</option>
+                                <option value="is not">is not</option>
+                            </select>
+                            <select class="form-select type-value" disabled>
+                                <option value="Land">Land</option>
+                                <option value="Creature">Creature</option>
+                                <option value="Artifact">Artifact</option>
+                                <option value="Enchantment">Enchantment</option>
+                                <option value="Instant">Instant</option>
+                                <option value="Sorcery">Sorcery</option>
+                                <option value="Planeswalker">Planeswalker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" id="add-type-filter" class="btn btn-small" style="margin: 5px 0;">+ Add Type Filter</button>
+                    <button type="button" id="clear-type-filters" class="btn btn-small">Clear Type Filters</button>
+                    
+                    <!-- Sorting -->
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label class="form-label">Sort by</label>
+                        <select id="sort-by" class="form-select">
+                            <option value="EDHREC Rank">EDHREC Rank</option>
+                            <option value="Name (A-Z)">Name (A-Z)</option>
+                            <option value="Mana Value (Low-High)">Mana Value (Low-High)</option>
+                            <option value="Mana Value (High-Low)">Mana Value (High-Low)</option>
+                            <option value="Price (Low-High)">Price (Low-High)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Main content area -->
+            <div class="content">
+                <!-- Results count -->
+                <div class="results-count" id="results-count">
+                    Loading cards...
+                </div>
+                
+                <!-- Top pagination -->
+                <div class="pagination" id="top-pagination">
+                    <button class="btn" id="prev-top">← Previous</button>
+                    <div></div>
+                    <div class="pagination-info" id="page-info-top">Page 1 of 1</div>
+                    <div></div>
+                    <button class="btn" id="next-top">Next →</button>
+                </div>
+                
+                <!-- Card grid -->
+                <div class="card-grid" id="card-grid">
+                    <!-- Cards will be loaded here by JavaScript -->
+                </div>
+                
+                <!-- Bottom pagination -->
+                <div class="pagination" id="bottom-pagination">
+                    <button class="btn" id="prev-bottom">← Previous</button>
+                    <div></div>
+                    <div class="pagination-info" id="page-info-bottom">Page 1 of 1</div>
+                    <div></div>
+                    <button class="btn" id="next-bottom">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // Global state
+    let currentPage = 1;
+    let isLoading = false;
+    let exactColorMode = false; // Track color filtering mode
+    let exactTypeMode = true; // Track type filtering mode (start with exact)
+
+    // DOM elements
+    const cardGrid = document.getElementById('card-grid');
+    const resultsCount = document.getElementById('results-count');
+    const pageInfoTop = document.getElementById('page-info-top');
+    const pageInfoBottom = document.getElementById('page-info-bottom');
+    const colorModeToggle = document.getElementById('color-mode-toggle');
+    const colorModeDescription = document.getElementById('color-mode-description');
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        setupEventListeners();
+        initializeFilterStates(); // Initialize dropdown visibility
+        loadCards(); // Load default gallery
+    });
+
+    function setupEventListeners() {
+        // Search inputs with debouncing for real-time search
+        const searchInputs = ['name-search', 'type-search', 'oracle-search'];
+        searchInputs.forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('input', debounce(loadCards, 300));
+        });
+        
+        // Checkboxes for immediate search
+        const checkboxes = ['regex-mode', 'word-order', 'white', 'blue', 'black', 'red', 'green', 'colorless'];
+        checkboxes.forEach(id => {
+            document.getElementById(id).addEventListener('change', loadCards);
+        });
+        
+        // Sort dropdown
+        document.getElementById('sort-by').addEventListener('change', loadCards);
+        
+        // Color mode toggle
+        colorModeToggle.addEventListener('click', toggleColorMode);
+
+        // Type mode toggle
+        document.getElementById('type-mode-toggle').addEventListener('click', toggleTypeMode);
+        
+        // Pagination buttons
+        document.getElementById('prev-top').addEventListener('click', () => changePage(-1));
+        document.getElementById('next-top').addEventListener('click', () => changePage(1));
+        document.getElementById('prev-bottom').addEventListener('click', () => changePage(-1));
+        document.getElementById('next-bottom').addEventListener('click', () => changePage(1));
+        
+        // Dynamic filter buttons
+        document.getElementById('add-cmc-filter').addEventListener('click', addCMCFilter);
+        document.getElementById('clear-cmc-filters').addEventListener('click', clearCMCFilters);
+        document.getElementById('add-type-filter').addEventListener('click', addTypeFilter);
+        document.getElementById('clear-type-filters').addEventListener('click', clearTypeFilters);
+        
+        // Initial CMC and Type filter change handlers
+        setupFilterChangeHandlers();
+        setupAutocomplete();
+        setupTypeAutocomplete();
+    }
+
+    function toggleColorMode() {
+        exactColorMode = !exactColorMode;
+        
+        const options = document.querySelectorAll('#color-mode-toggle .toggle-option');
+        if (exactColorMode) {
+            options[0].classList.remove('active'); // Identity
+            options[1].classList.add('active');    // Exact
+        } else {
+            options[0].classList.add('active');    // Identity
+            options[1].classList.remove('active'); // Exact
+        }
+        
+        loadCards();
+    }
+
+    function toggleTypeMode() {
+        exactTypeMode = !exactTypeMode;
+        
+        const options = document.querySelectorAll('#type-mode-toggle .toggle-option');
+        if (exactTypeMode) {
+            options[0].classList.add('active');    // Exact
+            options[1].classList.remove('active'); // Partial
+        } else {
+            options[0].classList.remove('active'); // Exact
+            options[1].classList.add('active');    // Partial
+        }
+        
+        loadCards();
+    }
+
+    function updateTypeToggleVisibility() {
+        const typeFilterContainer = document.getElementById('type-filters');
+        const typeFilterPairs = typeFilterContainer.querySelectorAll('.filter-pair');
+        const totalTypeFilters = typeFilterPairs.length;
+        
+        const toggle = document.getElementById('type-mode-toggle');
+        if (totalTypeFilters >= 2) {
+            toggle.classList.remove('type-toggle-hidden');
+        } else {
+            toggle.classList.add('type-toggle-hidden');
+        }
+    }
+
+    function setupFilterChangeHandlers() {
+        // Handle CMC filter changes
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('cmc-operator')) {
+                const filterPair = e.target.parentElement;
+                const valueInput = filterPair.querySelector('.cmc-value');
+                
+                if (e.target.value === 'any') {
+                    valueInput.disabled = true;
+                    valueInput.style.display = 'none';
+                } else {
+                    valueInput.disabled = false;
+                    valueInput.style.display = 'block';
+                }
+                updateTypeToggleVisibility();
+                loadCards();
+            }
+            
+            if (e.target.classList.contains('cmc-value')) {
+                loadCards();
+            }
+            
+            // Handle Type filter changes
+            if (e.target.classList.contains('type-operator')) {
+                const filterPair = e.target.parentElement;
+                const valueSelect = filterPair.querySelector('.type-value');
+                
+                if (e.target.value === 'any') {
+                    valueSelect.disabled = true;
+                    valueSelect.style.display = 'none';
+                } else {
+                    valueSelect.disabled = false;
+                    valueSelect.style.display = 'block';
+                }
+                loadCards();
+            }
+            
+            if (e.target.classList.contains('type-value')) {
+                loadCards();
+            }
+        });
+    }
+
+    function initializeFilterStates() {
+        // Hide CMC value inputs that start with "any"
+        document.querySelectorAll('.cmc-operator').forEach(select => {
+            const filterPair = select.parentElement;
+            const valueInput = filterPair.querySelector('.cmc-value');
+            if (select.value === 'any') {
+                valueInput.disabled = true;
+                valueInput.style.display = 'none';
+            }
+        });
+        
+        // Hide Type value selects that start with "any"
+        document.querySelectorAll('.type-operator').forEach(select => {
+            const filterPair = select.parentElement;
+            const valueSelect = filterPair.querySelector('.type-value');
+            if (select.value === 'any') {
+                valueSelect.disabled = true;
+                valueSelect.style.display = 'none';
+            }
+        });
+    }
+
+    // Debounce function for search inputs
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Main function to load cards
+    async function loadCards() {
+        if (isLoading) return;
+        isLoading = true;
+        
+        try {
+            const params = buildSearchParams();
+            const response = await fetch(`/api/search?${params}`);
+            const data = await response.json();
+            
+            displayCards(data.cards);
+            updatePagination(data);
+            updateResultsCount(data.total_cards);
+            
+        } catch (error) {
+            console.error('Error loading cards:', error);
+            cardGrid.innerHTML = '<div class="loading">Error loading cards. Please try again.</div>';
+        } finally {
+            isLoading = false;
+        }
+    }
+
+    function buildSearchParams() {
+        const params = new URLSearchParams();
+        
+        // Basic search fields
+        const nameSearch = document.getElementById('name-search').value;
+        const typeSearch = document.getElementById('type-search').value;
+        const oracleSearch = document.getElementById('oracle-search').value;
+        
+        if (nameSearch) params.append('name', nameSearch);
+        if (typeSearch) params.append('type_search', typeSearch);
+        if (oracleSearch) params.append('oracle', oracleSearch);
+        
+        // Search options
+        params.append('regex_mode', document.getElementById('regex-mode').checked);
+        params.append('word_order', document.getElementById('word-order').checked);
+        
+        // Color identity
+        const selectedColors = [];
+        ['white', 'blue', 'black', 'red', 'green'].forEach(color => {
+            const checkbox = document.getElementById(color);
+            if (checkbox.checked) {
+                selectedColors.push(checkbox.value);
+            }
+        });
+        if (selectedColors.length > 0) {
+            params.append('colors', selectedColors.join(','));
+        }
+        params.append('colorless', document.getElementById('colorless').checked);
+        
+        // Exact color mode parameter
+        params.append('exact_colors', exactColorMode);
+
+        // Exact type mode parameter
+        params.append('exact_types', exactTypeMode);
+        
+        // CMC filters
+        const cmcFilters = getCMCFilters();
+        if (cmcFilters.length > 0) {
+            params.append('cmc_filters', JSON.stringify(cmcFilters));
+        }
+        
+        // Type filters
+        const typeFilters = getTypeFilters();
+        if (typeFilters.length > 0) {
+            params.append('type_filters', JSON.stringify(typeFilters));
+        }
+        
+        // Sorting and pagination
+        params.append('sort_by', document.getElementById('sort-by').value);
+        params.append('page', currentPage);
+        params.append('per_page', 50);
+        
+        return params.toString();
+    }
+
+    function getCMCFilters() {
+        const filters = [];
+        const cmcContainer = document.getElementById('cmc-filters');
+        const filterPairs = cmcContainer.querySelectorAll('.filter-pair');
+        
+        filterPairs.forEach(pair => {
+            const operator = pair.querySelector('.cmc-operator').value;
+            const value = parseInt(pair.querySelector('.cmc-value').value) || 2;
+            filters.push({ operator, value });
+        });
+        
+        return filters;
+    }
+
+    function getTypeFilters() {
+        const filters = [];
+        const typeContainer = document.getElementById('type-filters');
+        const filterPairs = typeContainer.querySelectorAll('.filter-pair');
+        
+        filterPairs.forEach(pair => {
+            const operator = pair.querySelector('.type-operator').value;
+            const type = pair.querySelector('.type-value').value;
+            filters.push({ operator, type });
+        });
+        
+        return filters;
+    }
+
+    function displayCards(cards) {
+        if (cards.length === 0) {
+            cardGrid.innerHTML = '<div class="loading" style="grid-column: 1 / -1;">No cards found matching your filters.</div>';
+            return;
+        }
+        
+        cardGrid.innerHTML = cards.map(card => {
+            const imageUrl = card.image_url || '';
+            const cardName = card.name || 'Unknown Card';
+            
+            if (imageUrl) {
+                return `
+                    <div class="card-item">
+                        <img src="${imageUrl}" alt="${cardName}" class="card-image" loading="lazy">
+                        <button class="card-button" onclick="openCardDetail('${encodeURIComponent(cardName)}')">
+                            🔍
+                        </button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="card-item">
+                        <button class="card-button" onclick="openCardDetail('${encodeURIComponent(cardName)}')" style="height: 200px;">
+                            ${cardName}<br>(No Image)
+                        </button>
+                    </div>
+                `;
+            }
+        }).join('');
+    }
+
+    function updatePagination(data) {
+        const { current_page, total_pages } = data;
+        
+        // Update page info
+        const pageText = `Page ${current_page} of ${total_pages}`;
+        pageInfoTop.textContent = pageText;
+        pageInfoBottom.textContent = pageText;
+        
+        // Update button states
+        const prevButtons = [document.getElementById('prev-top'), document.getElementById('prev-bottom')];
+        const nextButtons = [document.getElementById('next-top'), document.getElementById('next-bottom')];
+        
+        prevButtons.forEach(btn => {
+            btn.disabled = current_page <= 1;
+            btn.style.opacity = current_page <= 1 ? '0.5' : '1';
+        });
+        
+        nextButtons.forEach(btn => {
+            btn.disabled = current_page >= total_pages;
+            btn.style.opacity = current_page >= total_pages ? '0.5' : '1';
+        });
+    }
+
+    function updateResultsCount(totalCards) {
+        resultsCount.textContent = `Showing ${totalCards} cards`;
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        if (currentPage < 1) currentPage = 1;
+        loadCards();
+    }
+
+    // Dynamic filter management
+    function addCMCFilter() {
+        const container = document.getElementById('cmc-filters');
+        const newFilter = document.createElement('div');
+        newFilter.className = 'filter-pair';
+        newFilter.innerHTML = `
+            <select class="form-select cmc-operator">
+                <option value="any">any</option>
+                <option value="equals">equals</option>
+                <option value="less than">less than</option>
+                <option value="less than or equal">less than or equal</option>
+                <option value="greater than">greater than</option>
+                <option value="greater than or equal">greater than or equal</option>
+            </select>
+            <input type="number" class="form-input cmc-value" min="0" max="20" value="2" disabled>
+        `;
+        container.appendChild(newFilter);
+    }
+
+    function clearCMCFilters() {
+        const container = document.getElementById('cmc-filters');
+        container.innerHTML = `
+            <div class="filter-pair">
+                <select class="form-select cmc-operator">
+                    <option value="any">any</option>
+                    <option value="equals">equals</option>
+                    <option value="less than">less than</option>
+                    <option value="less than or equal">less than or equal</option>
+                    <option value="greater than">greater than</option>
+                    <option value="greater than or equal">greater than or equal</option>
+                </select>
+                <input type="number" class="form-input cmc-value" min="0" max="20" value="2" disabled style="display: none;">
+            </div>
+        `;
+        loadCards();
+    }
+
+    function addTypeFilter() {
+        const container = document.getElementById('type-filters');
+        const newFilter = document.createElement('div');
+        newFilter.className = 'filter-pair';
+        newFilter.innerHTML = `
+            <select class="form-select type-operator">
+                <option value="any">any</option>
+                <option value="is">is</option>
+                <option value="is not">is not</option>
+            </select>
+            <select class="form-select type-value" disabled>
+                <option value="Land">Land</option>
+                <option value="Creature">Creature</option>
+                <option value="Artifact">Artifact</option>
+                <option value="Enchantment">Enchantment</option>
+                <option value="Instant">Instant</option>
+                <option value="Sorcery">Sorcery</option>
+                <option value="Planeswalker">Planeswalker</option>
+                <option value="Other">Other</option>
+            </select>
+        `;
+        container.appendChild(newFilter);
+        updateTypeToggleVisibility(); 
+    }
+
+    function clearTypeFilters() {
+        const container = document.getElementById('type-filters');
+        container.innerHTML = `
+            <div class="filter-pair">
+                <select class="form-select type-operator">
+                    <option value="any">any</option>
+                    <option value="is">is</option>
+                    <option value="is not">is not</option>
+                </select>
+                <select class="form-select type-value" disabled style="display: none;">
+                    <option value="Land">Land</option>
+                    <option value="Creature">Creature</option>
+                    <option value="Artifact">Artifact</option>
+                    <option value="Enchantment">Enchantment</option>
+                    <option value="Instant">Instant</option>
+                    <option value="Sorcery">Sorcery</option>
+                    <option value="Planeswalker">Planeswalker</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        `;
+        updateTypeToggleVisibility();
+        loadCards();
+    }
+
+    // Card detail function (placeholder for now)
+    function openCardDetail(cardName) {
+        // Just use the name directly without additional encoding
+        window.location.href = `/card/${cardName}`;
+    }
+
+    // Autocomplete functionality
+    let autocompleteTimeout;
+    let currentHighlightIndex = -1;
+    let autocompleteVisible = false;
+
+    function setupAutocomplete() {
+        const nameSearchInput = document.getElementById('name-search');
+        
+        // Wrap input in container
+        const container = document.createElement('div');
+        container.className = 'autocomplete-container';
+        nameSearchInput.parentNode.insertBefore(container, nameSearchInput);
+        container.appendChild(nameSearchInput);
+        
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'autocomplete-dropdown';
+        dropdown.className = 'autocomplete-dropdown';
+        dropdown.style.display = 'none';
+        container.appendChild(dropdown);
+        
+        // Event listeners
+        nameSearchInput.addEventListener('input', handleAutocompleteInput);
+        nameSearchInput.addEventListener('keydown', handleAutocompleteKeydown);
+        nameSearchInput.addEventListener('focus', handleAutocompleteFocus);
+        
+        document.addEventListener('click', function(e) {
+            if (!container.contains(e.target)) {
+                hideAutocomplete();
+            }
+        });
+    }
+
+    function setupTypeAutocomplete() {
+        const typeSearchInput = document.getElementById('type-search');
+        
+        // Wrap input in container
+        const container = document.createElement('div');
+        container.className = 'autocomplete-container';
+        typeSearchInput.parentNode.insertBefore(container, typeSearchInput);
+        container.appendChild(typeSearchInput);
+        
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.id = 'type-autocomplete-dropdown';
+        dropdown.className = 'autocomplete-dropdown';
+        dropdown.style.display = 'none';
+        container.appendChild(dropdown);
+        
+        // Track state separately for type autocomplete
+        let typeAutocompleteTimeout;
+        let typeHighlightIndex = -1;
+        let typeAutocompleteVisible = false;
+        
+        // Event listeners
+        typeSearchInput.addEventListener('input', function(e) {
+            const query = e.target.value;
+            clearTimeout(typeAutocompleteTimeout);
+            
+            if (query.length < 1) {
+                hideTypeAutocomplete();
+                return;
+            }
+            
+            typeAutocompleteTimeout = setTimeout(() => {
+                fetchTypeSuggestions(query);
+            }, 200);
+        });
+        
+        typeSearchInput.addEventListener('keydown', function(e) {
+            if (!typeAutocompleteVisible) return;
+            
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    typeHighlightIndex = Math.min(typeHighlightIndex + 1, items.length - 1);
+                    updateTypeHighlight(items, typeHighlightIndex);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    typeHighlightIndex = Math.max(typeHighlightIndex - 1, -1);
+                    updateTypeHighlight(items, typeHighlightIndex);
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (typeHighlightIndex >= 0 && items[typeHighlightIndex]) {
+                        selectTypeSuggestion(items[typeHighlightIndex].textContent);
+                    }
+                    break;
+                case 'Escape':
+                    hideTypeAutocomplete();
+                    break;
+            }
+        });
+        
+        typeSearchInput.addEventListener('focus', function(e) {
+            const query = e.target.value;
+            if (query.length >= 1) {
+                fetchTypeSuggestions(query);
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!container.contains(e.target)) {
+                hideTypeAutocomplete();
+            }
+        });
+        
+        async function fetchTypeSuggestions(query) {
+            try {
+                const response = await fetch(`/api/suggest-types?q=${encodeURIComponent(query)}&limit=10`);
+                const data = await response.json();
+                displayTypeSuggestions(data.suggestions);
+            } catch (error) {
+                console.error('Error fetching type suggestions:', error);
+                hideTypeAutocomplete();
+            }
+        }
+        
+        function displayTypeSuggestions(suggestions) {
+            if (suggestions.length === 0) {
+                hideTypeAutocomplete();
+                return;
+            }
+            
+            dropdown.innerHTML = suggestions.map(type => 
+                `<div class="autocomplete-item">${type}</div>`
+            ).join('');
+            
+            dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectTypeSuggestion(item.textContent);
+                });
+            });
+            
+            dropdown.style.display = 'block';
+            typeAutocompleteVisible = true;
+            typeHighlightIndex = -1;
+        }
+        
+        function updateTypeHighlight(items, currentIndex) {
+            items.forEach((item, index) => {
+                item.classList.toggle('highlighted', index === currentIndex);
+            });
+        }
+        
+        function selectTypeSuggestion(typeText) {
+            typeSearchInput.value = typeText;
+            hideTypeAutocomplete();
+            loadCards();
+        }
+        
+        function hideTypeAutocomplete() {
+            dropdown.style.display = 'none';
+            typeAutocompleteVisible = false;
+            typeHighlightIndex = -1;
+        }
+    }
+
+    function handleAutocompleteInput(e) {
+        const query = e.target.value;
+        clearTimeout(autocompleteTimeout);
+        
+        if (query.length < 2) {
+            hideAutocomplete();
+            return;
+        }
+        
+        autocompleteTimeout = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 200);
+    }
+
+    function handleAutocompleteKeydown(e) {
+        if (!autocompleteVisible) return;
+        
+        const items = document.querySelectorAll('.autocomplete-item');
+        
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                currentHighlightIndex = Math.min(currentHighlightIndex + 1, items.length - 1);
+                updateHighlight(items);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                currentHighlightIndex = Math.max(currentHighlightIndex - 1, -1);
+                updateHighlight(items);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                    selectSuggestion(items[currentHighlightIndex].textContent);
+                }
+                break;
+            case 'Escape':
+                hideAutocomplete();
+                break;
+        }
+    }
+
+    function handleAutocompleteFocus(e) {
+        const query = e.target.value;
+        if (query.length >= 2) {
+            fetchSuggestions(query);
+        }
+    }
+
+    async function fetchSuggestions(query) {
+        try {
+            const response = await fetch(`/api/suggest?q=${encodeURIComponent(query)}&limit=8`);
+            const data = await response.json();
+            displaySuggestions(data.suggestions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            hideAutocomplete();
+        }
+    }
+
+    function displaySuggestions(suggestions) {
+        const dropdown = document.getElementById('autocomplete-dropdown');
+        
+        if (suggestions.length === 0) {
+            hideAutocomplete();
+            return;
+        }
+        
+        dropdown.innerHTML = suggestions.map(name => 
+            `<div class="autocomplete-item">${name}</div>`
+        ).join('');
+        
+        dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+            item.addEventListener('click', () => {
+                selectSuggestion(item.textContent);
+            });
+        });
+        
+        dropdown.style.display = 'block';
+        autocompleteVisible = true;
+        currentHighlightIndex = -1;
+    }
+
+    function updateHighlight(items) {
+        items.forEach((item, index) => {
+            item.classList.toggle('highlighted', index === currentHighlightIndex);
+        });
+    }
+
+    function selectSuggestion(cardName) {
+        document.getElementById('name-search').value = cardName;
+        hideAutocomplete();
+        loadCards();
+    }
+
+    function hideAutocomplete() {
+        const dropdown = document.getElementById('autocomplete-dropdown');
+        dropdown.style.display = 'none';
+        autocompleteVisible = false;
+        currentHighlightIndex = -1;
+    }
+    </script>
+</body>
+</html>

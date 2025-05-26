@@ -1,21 +1,20 @@
 # MTG Efficiency Variable Database
 
-A powerful Magic: The Gathering card browser built with Streamlit.
+A FastAPI-powered Magic: The Gathering card database with advanced filtering capabilities.
 
 ## Features
-- Advanced filtering (name, type, oracle text, color identity, mana value)
-- Regex search support
-- Multi-faced card support
-- Mystical UI theme
-- 5-column responsive grid layout
+- Advanced card search with name, type, and oracle text filters
+- Color identity and exact color matching
+- Mana value filtering with multiple conditions
+- Card type filtering with AND/OR logic
+- Real-time autocomplete suggestions
+- Mobile-responsive design
 
-## Live Demo
-[View on Streamlit Cloud](https://your-app-url-here.streamlit.app)
+## Setup
+1. Install dependencies: `pip install -r requirements.txt`
+2. Place your `filtered_cards.json` file in the project root
+3. Run: `python fast_gallery.py`
+4. Open: `http://localhost:8000`
 
-## Local Installation
-1. Clone this repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run: `streamlit run gallery_app.py`
-
-## Data
-This app uses a `filtered_cards.json` file containing MTG card data.
+## Data Processing
+Use `filter.py` to process Scryfall JSON data into the required format.
