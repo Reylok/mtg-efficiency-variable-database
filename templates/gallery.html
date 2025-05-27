@@ -380,14 +380,20 @@
                 background: linear-gradient(180deg, #2d2d44 0%, #232339 100%);
                 border: none;
                 border-radius: 0;
-                padding: 80px 20px 20px 20px;
+                padding: 0;
                 z-index: 999;
-                overflow-y: auto;
-                overflow-x: hidden;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                display: block;
-                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                display: flex;
+                flex-direction: column;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .sidebar form {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 80px 20px 20px 20px;
             }
             
             .sidebar.show {
