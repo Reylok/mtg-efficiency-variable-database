@@ -371,14 +371,24 @@
             }
             
             .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
-                position: static;
-                display: none; /* Hidden by default on mobile */
-                margin-bottom: 20px;
+                height: 100vh;
+                background: linear-gradient(180deg, #2d2d44 0%, #232339 100%);
+                border: none;
+                border-radius: 0;
+                padding: 80px 20px 20px 20px; /* Extra top padding for hamburger button */
+                z-index: 999;
+                overflow-y: auto;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                display: block;
             }
             
             .sidebar.show {
-                display: block;
+                transform: translateX(0);
             }
             
             .card-grid {
@@ -711,15 +721,10 @@
 
     function toggleMobileFilters() {
         const sidebar = document.querySelector('.sidebar');
-        const toggleBtn = document.getElementById('mobile-filter-toggle');
+        const hamburger = document.getElementById('mobile-filter-toggle');
         
         sidebar.classList.toggle('show');
-        
-        if (sidebar.classList.contains('show')) {
-            toggleBtn.textContent = '❌ Hide Filters';
-        } else {
-            toggleBtn.textContent = '🔍 Show Filters';
-        }
+        hamburger.classList.toggle('active');
     }
 
     function updateTypeToggleVisibility() {
