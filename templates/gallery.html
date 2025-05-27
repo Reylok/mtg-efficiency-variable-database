@@ -328,27 +328,37 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        /* Mobile filter toggle button */
-        .mobile-filter-toggle {
+        /* Mobile hamburger menu */
+        .mobile-hamburger {
             display: none;
-            width: 100%;
-            margin-bottom: 15px;
-            padding: 12px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #3d3d5c, #2d2d44);
-            color: #e8e8f0;
             border: 1px solid rgba(120, 119, 198, 0.3);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
             transition: all 0.3s ease;
         }
 
-        .mobile-filter-toggle:hover {
+        .mobile-hamburger:hover {
             background: linear-gradient(135deg, #4d4d6c, #3d3d54);
             border-color: rgba(120, 119, 198, 0.5);
             box-shadow: 0 0 15px rgba(120, 119, 198, 0.2);
+        }
+
+        .mobile-hamburger span {
+            width: 20px;
+            height: 2px;
+            background: #e8e8f0;
+            transition: all 0.3s ease;
         }
 
         @media (max-width: 900px) {
@@ -356,8 +366,8 @@
                 flex-direction: column;
             }
             
-            .mobile-filter-toggle {
-                display: block;
+            .mobile-hamburger {
+                display: flex;
             }
             
             .sidebar {
@@ -431,9 +441,11 @@
         
         <div class="main-content">
             
-            <!-- Mobile filter toggle -->
-            <button class="mobile-filter-toggle" id="mobile-filter-toggle">
-                🔍 Show Filters
+            <!-- Mobile hamburger menu -->
+            <button class="mobile-hamburger" id="mobile-filter-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
 
             <!-- Sidebar with filters -->
