@@ -863,7 +863,7 @@
             return;
         }
         
-        cardGrid.innerHTML = cards.map(card => {
+        cardGrid.innerHTML = cards.map((card, index) => {
             const imageUrl = card.image_url || '';
             const cardName = card.name || 'Unknown Card';
             
@@ -871,7 +871,7 @@
                 return `
                     <div class="card-item">
                         <img src="${imageUrl}" alt="${cardName}" class="card-image" loading="lazy">
-                        <button class="card-button" onclick="openCardDetail('${encodeURIComponent(cardName)}')">
+                        <button class="card-button" data-card-name="${cardName}" data-card-index="${index}">
                             🔍
                         </button>
                     </div>
@@ -879,13 +879,21 @@
             } else {
                 return `
                     <div class="card-item">
-                        <button class="card-button" onclick="openCardDetail('${encodeURIComponent(cardName)}')" style="height: 200px;">
+                        <button class="card-button" data-card-name="${cardName}" data-card-index="${index}" style="height: 200px;">
                             ${cardName}<br>(No Image)
                         </button>
                     </div>
                 `;
             }
         }).join('');
+        
+        // Add click listeners to all card buttons
+        document.querySelectorAll('.card-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const cardName = this.getAttribute('data-card-name');
+                openCardDetail(cardName);
+            });
+        });
     }
 
     function updatePagination(data) {
@@ -1009,7 +1017,7 @@
     }
 
     function openCardDetail(cardName) {
-        window.location.href = `/card/${encodeURIComponent(cardName)}`;
+        window.location.href = `/card/${cardName}`;
     }
 
     // Autocomplete functionality

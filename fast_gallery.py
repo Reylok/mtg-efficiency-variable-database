@@ -441,8 +441,16 @@ async def suggest_types(q: str = "", limit: int = 10):
 @app.get("/card/{card_id}")
 async def card_detail(request: Request, card_id: str):
     """Card detail page"""
-    # Find card by some identifier (you'd need to add an ID field)
+    import urllib.parse
+    decoded_id = urllib.parse.unquote(card_id)
+    
+    # Find card by name
     card = next((c for c in cards_data if c.get('name') == card_id), None)
+    
+    if not card:
+        # Try with decoded version
+        card = next((c for c in cards_data if c.get('name') == decoded_id), None)
+    
     if not card:
         raise HTTPException(status_code=404, detail="Card not found")
     
