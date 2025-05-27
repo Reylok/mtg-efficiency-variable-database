@@ -945,26 +945,23 @@
             if (imageUrl) {
                 return `
                     <div class="card-item">
-                        <img src="${imageUrl}" alt="${cardName}" class="card-image" loading="lazy">
-                        <button class="card-button" data-card-name="${cardName}" data-card-index="${index}">
-                            🔍
-                        </button>
+                        <img src="${imageUrl}" alt="${cardName}" class="card-image" loading="lazy" data-card-name="${cardName}" style="cursor: pointer;">
                     </div>
                 `;
             } else {
                 return `
                     <div class="card-item">
-                        <button class="card-button" data-card-name="${cardName}" data-card-index="${index}" style="height: 200px;">
+                        <div class="card-placeholder" data-card-name="${cardName}" style="cursor: pointer; height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(45, 45, 68, 0.3); border-radius: 12px; text-align: center; padding: 20px;">
                             ${cardName}<br>(No Image)
-                        </button>
+                        </div>
                     </div>
                 `;
             }
         }).join('');
         
-        // Add click listeners to all card buttons
-        document.querySelectorAll('.card-button').forEach(button => {
-            button.addEventListener('click', function() {
+        // Add click listeners to images and placeholders
+        document.querySelectorAll('.card-image, .card-placeholder').forEach(element => {
+            element.addEventListener('click', function() {
                 const cardName = this.getAttribute('data-card-name');
                 openCardDetail(cardName);
             });
