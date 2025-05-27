@@ -1008,10 +1008,8 @@
         loadCards();
     }
 
-    // Card detail function (placeholder for now)
     function openCardDetail(cardName) {
-        // Just use the name directly without additional encoding
-        window.location.href = `/card/${cardName}`;
+        window.location.href = `/card/${encodeURIComponent(cardName)}`;
     }
 
     // Autocomplete functionality
