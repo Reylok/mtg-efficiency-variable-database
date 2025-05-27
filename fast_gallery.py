@@ -10,7 +10,7 @@ from typing import List, Dict, Any, Optional
 app = FastAPI(title="MTG Efficiency Variable Database")
 
 # Static files and templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Global cards data
